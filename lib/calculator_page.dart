@@ -15,10 +15,11 @@ class _CalculatorPageState extends State<CalculatorPage> {
   bool _justCalculated = false;
 
   final List<String> _buttons = [
-    '7', '8', '9', '/',
-    '4', '5', '6', '*',
-    '1', '2', '3', '-',
-    'C', '0', '=', '+',
+    'C', 'C', '%', '/',
+    '7', '8', '9', '*',
+    '4', '5', '6', '-',
+    '1', '2', '3', '+',
+    '0', '00', '.', '=',
   ];
 
   void _onButtonPressed(String value) {
@@ -31,25 +32,27 @@ class _CalculatorPageState extends State<CalculatorPage> {
       } else if (value == '=') {
         if (_expression.isEmpty) return;
         try {
-          final exp = Expression.parse(_expression.replaceAll('x', '*').replaceAll('÷', '/'));
+          final exp = Expression.parse(
+            _expression.replaceAll('x', '*').replaceAll('÷', '/'),
+          );
           final evaluator = const ExpressionEvaluator();
           final evalResult = evaluator.eval(exp, {});
           _result = evalResult.toString();
           _display = '$_expression = $_result';
           _justCalculated = true;
         } catch (e) {
-            if (_expression.contains('/0')) {
+          if (_expression.contains('/0')) {
             _result = 'Undefined';
-            } else {
+          } else {
             _result = 'Error';
-            }
+          }
           _display = '$_expression = $_result';
           _justCalculated = true;
         }
       } else {
         if (_justCalculated) {
           // Start new expression after calculation
-          if ('+-*/'.contains(value)) {
+          if ('+-*/%'.contains(value)) {
             _expression = _result + value;
           } else {
             _expression = value;
@@ -70,7 +73,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
       bgColor = Colors.redAccent;
     } else if (value == '=') {
       bgColor = Colors.green;
-    } else if ('+-*/'.contains(value)) {
+    } else if ('+-*/%'.contains(value)) {
       bgColor = Colors.blueAccent;
     } else {
       bgColor = Colors.grey[800]!;
@@ -167,10 +170,9 @@ class _CalculatorPageState extends State<CalculatorPage> {
             const SizedBox(height: 24),
             Center(
               child: SizedBox(
-                height: 300, // adjust as needed
-                width: 300,  // adjust as needed
+                height: 400, // adjust as needed
+                width: 400, // adjust as needed
                 child: GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(), // prevent scrolling
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 4,
                     mainAxisSpacing: 8,
